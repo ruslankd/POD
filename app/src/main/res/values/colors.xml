@@ -8,4 +8,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="color_gray">#66000000</color>
+
+    <color name="color_primary">#ff616161</color>
+    <color name="color_primary_dark">#ff373737</color>
+    <color name="myBackgroundColor">#fff0f4c3</color>
+
+    <color name="color_primary_theme2">#ffe57373</color>
+    <color name="color_primary_dark_theme2">#ffaf4448</color>
+    <color name="myBackgroundColor2">#ffffebee</color>
+
+    <color name="color_primary_theme3">#ff2e7d32</color>
+    <color name="color_primary_dark_theme3">#ff005005</color>
+    <color name="myBackgroundColor3">#ffe8f5e9</color>
+
 </resources>

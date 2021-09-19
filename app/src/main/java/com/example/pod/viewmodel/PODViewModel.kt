@@ -1,11 +1,10 @@
 package com.example.pod.viewmodel
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pod.BuildConfig
-import com.example.pod.repository.PODRetrofitImpl
+import com.example.pod.repository.NasaRetrofitImpl
 import com.example.pod.repository.PODServerResponseData
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,8 +13,29 @@ import java.lang.Error
 
 class PODViewModel(
     private val liveDataToObserve: MutableLiveData<PODData> = MutableLiveData(),
-    private val retrofitImpl: PODRetrofitImpl = PODRetrofitImpl())
+    private val retrofitImpl: NasaRetrofitImpl = NasaRetrofitImpl())
     : ViewModel() {
+
+    private val podCallback = object : Callback<PODServerResponseData> {
+        override fun onResponse(
+                call: Call<PODServerResponseData>,
+                response: Response<PODServerResponseData>
+        ) {
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    liveDataToObserve.postValue(PODData.Success(it))
+                }
+            } else {
+                liveDataToObserve.postValue(
+                        PODData.Error(Error(response.message()))
+                )
+            }
+        }
+
+        override fun onFailure(call: Call<PODServerResponseData>, t: Throwable) {
+            liveDataToObserve.postValue(PODData.Error(t))
+        }
+    }
 
     fun getLiveData(): LiveData<PODData> = liveDataToObserve
 
@@ -25,31 +45,7 @@ class PODViewModel(
         if(apiKey.isBlank()){
             //
         } else {
-            retrofitImpl.getRetrofitImpl().getPictureOfTheDay(date, apiKey).enqueue(
-                object : Callback<PODServerResponseData> {
-                    override fun onResponse(
-                        call: Call<PODServerResponseData>,
-                        response: Response<PODServerResponseData>
-                    ) {
-                        if (response.isSuccessful) {
-                            response.body()?.let {
-                                liveDataToObserve.postValue(PODData.Success(it))
-                            }
-                        } else {
-                            liveDataToObserve.postValue(
-                                PODData.Error(Error(response.message()))
-                            )
-                        }
-                    }
-
-                    override fun onFailure(call: Call<PODServerResponseData>, t: Throwable) {
-                        liveDataToObserve.postValue(
-                            PODData.Error(t)
-                        )
-                    }
-
-                }
-            )
+            retrofitImpl.getPictureOfTheDay(date, apiKey, podCallback)
         }
     }
 }

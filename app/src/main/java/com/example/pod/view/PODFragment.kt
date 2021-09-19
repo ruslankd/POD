@@ -5,10 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.pod.R
@@ -16,7 +14,6 @@ import com.example.pod.databinding.FragmentMainBinding
 import com.example.pod.viewmodel.PODData
 import com.example.pod.viewmodel.PODViewModel
 import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,8 +28,6 @@ class PODFragment : Fragment() {
     private val viewModel: PODViewModel by lazy {
         ViewModelProvider(this).get(PODViewModel::class.java)
     }
-
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private var datePOD: String = ""
 
@@ -51,14 +46,14 @@ class PODFragment : Fragment() {
     }
 
     private fun setChipsGroup() {
-        binding.chipGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.chipGroup.setOnCheckedChangeListener { _, _ ->
             setDatePOD()
             viewModel.sendServerRequest(datePOD)
         }
     }
 
     private fun setDatePOD() {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
         val date =
                 when (binding.chipGroup.checkedChipId) {
                     0 -> Date(System.currentTimeMillis() - 2 * (1000 * 60 * 60 * 24))
@@ -69,7 +64,7 @@ class PODFragment : Fragment() {
     }
 
     private fun setChips() {
-        binding.chipHd.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.chipHd.setOnCheckedChangeListener { _, _ ->
             viewModel.sendServerRequest(datePOD)
         }
     }
@@ -122,8 +117,6 @@ class PODFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setBottomSheetBehavior(binding.bottomSheet.bottomSheetContainer)
-
         viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
         viewModel.sendServerRequest(datePOD)
 
@@ -136,11 +129,6 @@ class PODFragment : Fragment() {
         }
     }
 
-    private fun setBottomSheetBehavior(bottomSheet: ConstraintLayout) {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
     private fun renderData(data: PODData) {
         when (data) {
             is PODData.Error -> {
@@ -148,7 +136,9 @@ class PODFragment : Fragment() {
                 Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
             }
             is PODData.Loading -> {
-                binding.progressBar.visibility = View.VISIBLE
+                binding.imageView.load(R.drawable.progress_animation) {
+                    error(R.drawable.ic_load_error_vector)
+                }
             }
             is PODData.Success -> {
                 binding.progressBar.visibility = View.GONE
@@ -159,15 +149,12 @@ class PODFragment : Fragment() {
                             if (binding.chipHd.isChecked) data.serverResponseData.hdurl
                             else data.serverResponseData.url
                     binding.imageView.load(url) {
-                        lifecycle(this@PODFragment)
+                        placeholder(R.drawable.progress_animation)
                         error(R.drawable.ic_load_error_vector)
-                        placeholder(R.drawable.ic_no_photo_vector)
+                        lifecycle(this@PODFragment)
                     }
                     binding.tvExplanation.text = data.serverResponseData.explanation
                 }
-
-//                binding.includeLayout.bottomSheetDescriptionHeader.text =data.serverResponseData.explanation // так
-//                binding.includeLayout.bottomSheetDescription.text =data.serverResponseData.explanation // или так, дальше уже на ваш вкус
             }
         }
     }
@@ -189,7 +176,7 @@ class PODFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.app_bar_fav -> {
-                Toast.makeText(context, "Favorite", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(context, ApiActivity::class.java))
             }
             R.id.app_bar_settings -> {
                 requireActivity()

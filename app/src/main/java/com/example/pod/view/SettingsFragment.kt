@@ -1,7 +1,6 @@
 package com.example.pod.view
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -20,7 +19,6 @@ class SettingsFragment : Fragment() {
             return _binding!!
         }
 
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -33,7 +31,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.chipGroupForTheme.setOnCheckedChangeListener { group, checkedId ->
+        binding.chipGroupForTheme.setOnCheckedChangeListener { _, checkedId ->
             var themeId: Int = R.style.Theme_POD
             when(checkedId) {
                 R.id.chipTheme1 -> themeId = R.style.Theme_POD
@@ -45,13 +43,13 @@ class SettingsFragment : Fragment() {
                     .edit()
                     .putInt(SP_THEME, themeId)
                     .apply()
-            Handler().post(Runnable {
+            Handler().post {
                 val intent = requireActivity().intent
                 requireActivity().overridePendingTransition(0, 0)
                 requireActivity().finish()
                 requireActivity().overridePendingTransition(0, 0)
                 startActivity(intent)
-            })
+            }
         }
     }
 
@@ -63,7 +61,7 @@ class SettingsFragment : Fragment() {
     companion object {
         fun newInstance() = SettingsFragment()
 
-        val SP_THEME = "SP theme"
+        const val SP_THEME = "SP theme"
     }
 
 }

@@ -15,4 +15,6 @@
     <string name="theme_2">Тема 2</string>
     <string name="theme_3">Тема 3</string>
     <string name="select_date">Выберите дату</string>
+    <string name="cosmos">Космос</string>
+    <string name="cosmos_info">The universe is all of space and time and their contents, including planets, stars, galaxies, and all other forms of matter and energy. The Big Bang theory is the prevailing cosmological description of the development of the universe. According to estimation of this theory, space and time emerged together 13.799±0.021 billion years ago, and the universe has been expanding ever since. While the spatial size of the entire universe is unknown, the cosmic inflation equation indicates that it must have a minimum diameter of 23 trillion light years, and it is possible to measure the size of the observable universe, which is approximately 93 billion light-years in diameter at the present day.</string>
 </resources>

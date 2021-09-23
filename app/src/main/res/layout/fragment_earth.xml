@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
 
         app:videoId="e83fjUuBSvc"
-        app:autoPlay="true"
+        app:autoPlay="false"
         app:showFullScreenButton="false" />
 </LinearLayout>

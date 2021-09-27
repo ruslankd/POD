@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.pod.R
+import com.example.pod.view.SettingsFragment.Companion.SHARED_PREF_NAME
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
-            val themeId = getSharedPreferences("POD_SP", Context.MODE_PRIVATE)
+            val themeId = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 .getInt(SettingsFragment.SP_THEME, R.style.Theme3)
             setTheme(themeId)
         }

@@ -14,7 +14,15 @@
         <item name="chipStyle">@style/myChip</item>
         <item name="textInputStyle">@style/myOutlinedBox</item>
         <item name="tabStyle">@style/myTabs</item>
+
+        <item name="android:windowSharedElementEnterTransition" tools:ignore="NewApi">
+            @transition/detail_transition
+        </item>
+        <item name="android:windowSharedElementExitTransition" tools:ignore="NewApi">
+            @transition/detail_transition
+        </item>
     </style>
+
 
     <style name="myChip" parent="@style/Widget.MaterialComponents.Chip.Choice">
         <item name="chipCornerRadius">16dp</item>
@@ -45,8 +53,6 @@
     <style name="myOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="endIconMode">custom</item>
         <item name="errorTextColor">@android:color/holo_red_dark</item>
-        <item name="counterEnabled">true</item>
-        <item name="counterMaxLength">10</item>
         <item name="boxCornerRadiusTopStart">16dp</item>
         <item name="boxCornerRadiusBottomEnd">16dp</item>
     </style>

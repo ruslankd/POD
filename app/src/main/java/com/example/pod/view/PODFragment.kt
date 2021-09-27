@@ -4,10 +4,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnticipateOvershootInterpolator
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeImageTransform
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import coil.load
 import com.example.pod.R
 import com.example.pod.databinding.FragmentMainBinding
@@ -30,6 +37,8 @@ class PODFragment : Fragment() {
     }
 
     private var datePOD: String = ""
+    private var isShow = true
+    private var isExpanded = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,11 +51,30 @@ class PODFragment : Fragment() {
         setChips()
         setChipsGroup()
         setDatePOD()
+        setImageAnimation()
         return binding.root
     }
 
+    private fun setImageAnimation() {
+        binding.includedLayout.imageView.setOnClickListener {
+            isExpanded = !isExpanded
+            TransitionManager.beginDelayedTransition(
+                binding.includedLayout.main, TransitionSet()
+                    .addTransition(ChangeBounds())
+                    .addTransition(ChangeImageTransform())
+            )
+
+            val params: ViewGroup.LayoutParams = binding.includedLayout.imageView.layoutParams
+            params.height =
+                if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.includedLayout.imageView.layoutParams = params
+            binding.includedLayout.imageView.scaleType =
+                if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.CENTER_INSIDE
+        }
+    }
+
     private fun setChipsGroup() {
-        binding.chipGroup.setOnCheckedChangeListener { _, _ ->
+        binding.includedLayout.chipGroup.setOnCheckedChangeListener { _, _ ->
             setDatePOD()
             viewModel.sendServerRequest(datePOD)
         }
@@ -55,7 +83,7 @@ class PODFragment : Fragment() {
     private fun setDatePOD() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
         val date =
-                when (binding.chipGroup.checkedChipId) {
+                when (binding.includedLayout.chipGroup.checkedChipId) {
                     0 -> Date(System.currentTimeMillis() - 2 * (1000 * 60 * 60 * 24))
                     1 -> Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24))
                     else -> Date(System.currentTimeMillis())
@@ -64,7 +92,7 @@ class PODFragment : Fragment() {
     }
 
     private fun setChips() {
-        binding.chipHd.setOnCheckedChangeListener { _, _ ->
+        binding.includedLayout.chipHd.setOnCheckedChangeListener { _, _ ->
             viewModel.sendServerRequest(datePOD)
         }
     }
@@ -120,40 +148,70 @@ class PODFragment : Fragment() {
         viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
         viewModel.sendServerRequest(datePOD)
 
-        binding.inputLayout.setEndIconOnClickListener {
+        binding.includedLayout.inputLayout.setEndIconOnClickListener {
             val i = Intent(Intent.ACTION_VIEW).apply {
                 data =
-                    Uri.parse("https://en.wikipedia.org/wiki/${binding.inputEditText.text.toString()}")
+                    Uri.parse("https://en.wikipedia.org/wiki/${binding.includedLayout.inputEditText.text.toString()}")
             }
             startActivity(i)
         }
+
+        binding.includedLayout.ivWiki.setOnClickListener { if (isShow) hideComponents() else showComponents() }
+    }
+
+    private fun showComponents() {
+        isShow = true
+
+        val constraintSet = ConstraintSet().apply { clone(context, R.layout.included_constraint_start) }
+
+        val transition = ChangeBounds().apply {
+            interpolator = AnticipateOvershootInterpolator(2.0f)
+            duration = 1200
+        }
+
+        TransitionManager.beginDelayedTransition(binding.includedLayout.main, transition)
+        constraintSet.applyTo(binding.includedLayout.main)
+    }
+
+    private fun hideComponents() {
+        isShow = false
+
+        val constraintSet = ConstraintSet().apply { clone(context, R.layout.included_constraint_end) }
+
+        val transition = ChangeBounds().apply {
+            interpolator = AnticipateOvershootInterpolator(2.0f)
+            duration = 1200
+        }
+
+        TransitionManager.beginDelayedTransition(binding.includedLayout.main, transition)
+        constraintSet.applyTo(binding.includedLayout.main)
     }
 
     private fun renderData(data: PODData) {
         when (data) {
             is PODData.Error -> {
-                binding.progressBar.visibility = View.GONE
+                binding.includedLayout.progressBar.visibility = View.GONE
                 Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
             }
             is PODData.Loading -> {
-                binding.imageView.load(R.drawable.progress_animation) {
+                binding.includedLayout.imageView.load(R.drawable.progress_animation) {
                     error(R.drawable.ic_load_error_vector)
                 }
             }
             is PODData.Success -> {
-                binding.progressBar.visibility = View.GONE
+                binding.includedLayout.progressBar.visibility = View.GONE
                 if (data.serverResponseData.url.isNullOrEmpty()) {
                     Toast.makeText(context, "URL is empty", Toast.LENGTH_SHORT).show()
                 } else {
                     val url =
-                            if (binding.chipHd.isChecked) data.serverResponseData.hdurl
+                            if (binding.includedLayout.chipHd.isChecked) data.serverResponseData.hdurl
                             else data.serverResponseData.url
-                    binding.imageView.load(url) {
+                    binding.includedLayout.imageView.load(url) {
                         placeholder(R.drawable.progress_animation)
                         error(R.drawable.ic_load_error_vector)
                         lifecycle(this@PODFragment)
                     }
-                    binding.tvExplanation.text = data.serverResponseData.explanation
+                    binding.includedLayout.tvExplanation.text = data.serverResponseData.explanation
                 }
             }
         }

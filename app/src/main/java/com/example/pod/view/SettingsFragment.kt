@@ -39,7 +39,7 @@ class SettingsFragment : Fragment() {
                 R.id.chipTheme3 -> themeId = R.style.Theme3
             }
             requireActivity()
-                    .getSharedPreferences("POD_SP", Context.MODE_PRIVATE)
+                    .getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
                     .edit()
                     .putInt(SP_THEME, themeId)
                     .apply()
@@ -61,6 +61,7 @@ class SettingsFragment : Fragment() {
     companion object {
         fun newInstance() = SettingsFragment()
 
+        const val SHARED_PREF_NAME = "POD_SP"
         const val SP_THEME = "SP theme"
     }
 

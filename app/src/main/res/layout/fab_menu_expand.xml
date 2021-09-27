@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fabConstraint"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_info"
+        app:tint="@color/white"
+        app:maxImageSize="30dp"
+        app:fabCustomSize="@dimen/card_size"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/fab_content_description" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardSun"
+        android:layout_width="@dimen/card_size"
+        android:layout_height="@dimen/card_size"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_gravity="center"
+        app:layout_constraintCircle="@id/fabMain"
+        app:layout_constraintCircleAngle="280"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/ivFabSun"
+            android:layout_width="@dimen/card_size"
+            android:layout_height="@dimen/card_size"
+            android:src="@drawable/sun"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/sun_photo" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardMars"
+        android:layout_width="@dimen/card_size"
+        android:layout_height="@dimen/card_size"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_gravity="center"
+        app:layout_constraintCircle="@id/fabMain"
+        app:layout_constraintCircleAngle="320"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/ivFabMars"
+            android:layout_width="@dimen/card_size"
+            android:layout_height="@dimen/card_size"
+            android:src="@drawable/mars"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/mars_photo" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardEarth"
+        android:layout_width="@dimen/card_size"
+        android:layout_height="@dimen/card_size"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:layout_gravity="center"
+        app:layout_constraintCircle="@id/fabMain"
+        app:layout_constraintCircleAngle="360"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/ivFabEarth"
+            android:layout_width="@dimen/card_size"
+            android:layout_height="@dimen/card_size"
+            android:src="@drawable/earth"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/earth_photo" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

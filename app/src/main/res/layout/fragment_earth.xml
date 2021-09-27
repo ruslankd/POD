@@ -13,4 +13,11 @@
         app:videoId="e83fjUuBSvc"
         app:autoPlay="false"
         app:showFullScreenButton="false" />
+
+    <include
+        android:id="@+id/fabMenu"
+        layout="@layout/fab_menu_expand"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|end"/>
 </LinearLayout>

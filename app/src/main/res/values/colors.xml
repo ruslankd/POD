@@ -20,5 +20,6 @@
     <color name="color_primary_theme3">#ff2e7d32</color>
     <color name="color_primary_dark_theme3">#ff005005</color>
     <color name="myBackgroundColor3">#ffe8f5e9</color>
+    <color name="noteBackgroundColor">#FAF4EC</color>
 
 </resources>

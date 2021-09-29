@@ -233,16 +233,24 @@ class PODFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.app_bar_fav -> {
+            R.id.action_fav -> {
                 startActivity(Intent(context, ApiActivity::class.java))
             }
-            R.id.app_bar_settings -> {
+            R.id.action_settings -> {
                 requireActivity()
                         .supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.container, SettingsFragment.newInstance())
                         .addToBackStack("")
-                        .commit()
+                    .commitAllowingStateLoss()
+            }
+            R.id.action_notes -> {
+                requireActivity()
+                    .supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, NotesFragment.newInstance())
+                    .addToBackStack("")
+                    .commitAllowingStateLoss()
             }
             android.R.id.home -> {
                 BottomNavigationDrawerFragment.newInstance()

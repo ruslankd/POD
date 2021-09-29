@@ -28,10 +28,10 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.navigationView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.app_bar_fav ->{
+                R.id.action_fav ->{
                     Toast.makeText(context,"Favorite", Toast.LENGTH_SHORT).show()
                 }
-                R.id.app_bar_settings ->{
+                R.id.action_settings ->{
                     Toast.makeText(context,"Settings", Toast.LENGTH_SHORT).show()
                 }
             }

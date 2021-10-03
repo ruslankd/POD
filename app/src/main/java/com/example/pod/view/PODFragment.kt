@@ -1,11 +1,20 @@
 package com.example.pod.view
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
 import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -157,6 +166,8 @@ class PODFragment : Fragment() {
         }
 
         binding.includedLayout.ivWiki.setOnClickListener { if (isShow) hideComponents() else showComponents() }
+
+        binding.includedLayout.tvExplanation.typeface = Typeface.createFromAsset(requireActivity().assets, "RobotReaversItalic.ttf")
     }
 
     private fun showComponents() {
@@ -211,9 +222,27 @@ class PODFragment : Fragment() {
                         error(R.drawable.ic_load_error_vector)
                         lifecycle(this@PODFragment)
                     }
-                    binding.includedLayout.tvExplanation.text = data.serverResponseData.explanation
+                    data.serverResponseData.explanation?.let {
+                        binding.includedLayout.tvExplanation.setText(data.serverResponseData.explanation, TextView.BufferType.EDITABLE)
+                        explanationTextDecor()
+                    }
                 }
             }
+        }
+    }
+
+    private fun explanationTextDecor() {
+        val spannable = binding.includedLayout.tvExplanation.text as SpannableStringBuilder
+
+        for (i in spannable.indices) {
+            if (spannable[i] == 'o') {
+                spannable.setSpan(ImageSpan(requireContext(), R.drawable.ic_planet_earth), i, i + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+        }
+
+        for (i in spannable.length / 3 downTo 1) {
+            val n = (0 until (spannable.length - 1)).random()
+            spannable.setSpan(ForegroundColorSpan(Color.GREEN), n, n + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         }
     }
 

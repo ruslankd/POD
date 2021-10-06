@@ -34,6 +34,10 @@
         <item name="tabSelectedTextColor">@color/design_default_color_on_primary</item>
     </style>
 
+    <style name="Theme.POD.Splash">
+        <item name="android:windowBackground">@drawable/splash_background_drawable</item>
+    </style>
+
     <style name="Theme2" parent="Theme.POD">
         <item name="frameBackgroundColor">@color/myBackgroundColor2</item>
         <item name="colorPrimary">@color/color_primary_theme2</item>

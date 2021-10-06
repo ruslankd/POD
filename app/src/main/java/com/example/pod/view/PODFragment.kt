@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +31,10 @@ import com.example.pod.databinding.FragmentMainBinding
 import com.example.pod.viewmodel.PODData
 import com.example.pod.viewmodel.PODViewModel
 import com.google.android.material.bottomappbar.BottomAppBar
+import smartdevelop.ir.eram.showcaseviewlib.GuideView
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType
+import smartdevelop.ir.eram.showcaseviewlib.config.Gravity
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -61,6 +66,16 @@ class PODFragment : Fragment() {
         setChipsGroup()
         setDatePOD()
         setImageAnimation()
+
+        val builder = GuideView.Builder(context)
+            .setContentText("С помощью этой кнопки вы можете скрыть панель поиска Википедии")
+            .setGravity(Gravity.center)
+            .setDismissType(DismissType.selfView)
+            .setTargetView(binding.includedLayout.ivWiki)
+            .setDismissType(DismissType.anywhere)
+            .setGuideListener { }
+        builder.build().show()
+
         return binding.root
     }
 
@@ -92,11 +107,11 @@ class PODFragment : Fragment() {
     private fun setDatePOD() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
         val date =
-                when (binding.includedLayout.chipGroup.checkedChipId) {
-                    0 -> Date(System.currentTimeMillis() - 2 * (1000 * 60 * 60 * 24))
-                    1 -> Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24))
-                    else -> Date(System.currentTimeMillis())
-        }
+            when (binding.includedLayout.chipGroup.checkedChipId) {
+                0 -> Date(System.currentTimeMillis() - 2 * (1000 * 60 * 60 * 24))
+                1 -> Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24))
+                else -> Date(System.currentTimeMillis())
+            }
         datePOD = dateFormat.format(date.time)
     }
 
@@ -167,13 +182,17 @@ class PODFragment : Fragment() {
 
         binding.includedLayout.ivWiki.setOnClickListener { if (isShow) hideComponents() else showComponents() }
 
-        binding.includedLayout.tvExplanation.typeface = Typeface.createFromAsset(requireActivity().assets, "RobotReaversItalic.ttf")
+        binding.includedLayout.tvExplanation.typeface =
+            Typeface.createFromAsset(requireActivity().assets, "RobotReaversItalic.ttf")
+
+
     }
 
     private fun showComponents() {
         isShow = true
 
-        val constraintSet = ConstraintSet().apply { clone(context, R.layout.included_constraint_start) }
+        val constraintSet =
+            ConstraintSet().apply { clone(context, R.layout.included_constraint_start) }
 
         val transition = ChangeBounds().apply {
             interpolator = AnticipateOvershootInterpolator(2.0f)
@@ -187,7 +206,8 @@ class PODFragment : Fragment() {
     private fun hideComponents() {
         isShow = false
 
-        val constraintSet = ConstraintSet().apply { clone(context, R.layout.included_constraint_end) }
+        val constraintSet =
+            ConstraintSet().apply { clone(context, R.layout.included_constraint_end) }
 
         val transition = ChangeBounds().apply {
             interpolator = AnticipateOvershootInterpolator(2.0f)
@@ -215,15 +235,18 @@ class PODFragment : Fragment() {
                     Toast.makeText(context, "URL is empty", Toast.LENGTH_SHORT).show()
                 } else {
                     val url =
-                            if (binding.includedLayout.chipHd.isChecked) data.serverResponseData.hdurl
-                            else data.serverResponseData.url
+                        if (binding.includedLayout.chipHd.isChecked) data.serverResponseData.hdurl
+                        else data.serverResponseData.url
                     binding.includedLayout.imageView.load(url) {
                         placeholder(R.drawable.progress_animation)
                         error(R.drawable.ic_load_error_vector)
                         lifecycle(this@PODFragment)
                     }
                     data.serverResponseData.explanation?.let {
-                        binding.includedLayout.tvExplanation.setText(data.serverResponseData.explanation, TextView.BufferType.EDITABLE)
+                        binding.includedLayout.tvExplanation.setText(
+                            data.serverResponseData.explanation,
+                            TextView.BufferType.EDITABLE
+                        )
                         explanationTextDecor()
                     }
                 }
@@ -236,13 +259,23 @@ class PODFragment : Fragment() {
 
         for (i in spannable.indices) {
             if (spannable[i] == 'o') {
-                spannable.setSpan(ImageSpan(requireContext(), R.drawable.ic_planet_earth), i, i + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                spannable.setSpan(
+                    ImageSpan(requireContext(), R.drawable.ic_planet_earth),
+                    i,
+                    i + 1,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
             }
         }
 
         for (i in spannable.length / 3 downTo 1) {
             val n = (0 until (spannable.length - 1)).random()
-            spannable.setSpan(ForegroundColorSpan(Color.GREEN), n, n + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            spannable.setSpan(
+                ForegroundColorSpan(Color.GREEN),
+                n,
+                n + 1,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
         }
     }
 
@@ -267,10 +300,10 @@ class PODFragment : Fragment() {
             }
             R.id.action_settings -> {
                 requireActivity()
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, SettingsFragment.newInstance())
-                        .addToBackStack("")
+                    .supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, SettingsFragment.newInstance())
+                    .addToBackStack("")
                     .commitAllowingStateLoss()
             }
             R.id.action_notes -> {
